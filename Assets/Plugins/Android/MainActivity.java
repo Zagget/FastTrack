@@ -77,7 +77,7 @@ public class MainActivity extends UnityPlayerActivity
     private void connected() 
     {
         // Play a playlist
-        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
+        mSpotifyAppRemote.getPlayerApi().play("spotify:track:0ByMNEPAPpOR5H69DVrTNy");
  
         // Subscribe to PlayerState
         mSpotifyAppRemote.getPlayerApi()

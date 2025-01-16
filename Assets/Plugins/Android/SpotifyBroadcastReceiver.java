@@ -1,6 +1,7 @@
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class SpotifyBroadcastReceiver extends BroadcastReceiver {
     static final class BroadcastTypes {
@@ -25,13 +26,17 @@ public class SpotifyBroadcastReceiver extends BroadcastReceiver {
             String albumName = intent.getStringExtra("album");
             String trackName = intent.getStringExtra("track");
             int trackLengthInSec = intent.getIntExtra("length", 0);
-            // Do something with extracted information...
+            Log.d("BroadCast change", "MetaData changed");
+
+
         } else if (action.equals(BroadcastTypes.PLAYBACK_STATE_CHANGED)) {
             boolean playing = intent.getBooleanExtra("playing", false);
             int positionInMs = intent.getIntExtra("playbackPosition", 0);
-            // Do something with extracted information
+            Log.d("BroadCast change", "Playbackstate changed");
+
         } else if (action.equals(BroadcastTypes.QUEUE_CHANGED)) {
-            // Sent only as a notification, your app may want to respond accordingly.
+            Log.d("BroadCast change", "Que changed");
+
         }
     }
 }
