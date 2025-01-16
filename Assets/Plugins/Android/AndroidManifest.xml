@@ -15,7 +15,7 @@
 		</activity>
 
 		<receiver
-            android:name="BroadcastReceiver"
+            android:name="SpotifyBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
 			<intent-filter>
