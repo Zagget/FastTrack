@@ -1,94 +1,95 @@
 package com.unity3d.player;
- 
+
 import android.os.Bundle;
 import com.unity3d.player.UnityPlayerActivity;
 import android.content.Intent;
 import android.content.IntentFilter;
- 
+
 import android.util.Log;
- 
+
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
- 
+import com.spotify.android.appremote.api.PlayerApi;
+import com.spotify.android.appremote.api.PlayerApi.RepeatMode;
+
 import com.spotify.protocol.client.Subscription;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
- 
-public class MainActivity extends UnityPlayerActivity 
-{
+
+public class MainActivity extends UnityPlayerActivity {
     public static MainActivity instance; // For Unity C# to trigger functions here
     public static String currentPlaying = ""; // For Unity C# to read current playing info
-     
+
     private static final String CLIENT_ID = "bf89756b59104628888b8d7a2b5b75df"; // Use your own Client Id
-    private static final String REDIRECT_URI = "http://localhost:5000/callback"; // Also match this on the app settings page
+    private static final String REDIRECT_URI = "http://localhost:5000/callback"; // Also match this on the app settings
     private SpotifyAppRemote mSpotifyAppRemote;
- 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) 
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
     }
-     
-    // Triggered by Unity C# script
-    public void PlaySong(String trackId) 
-    {
-        mSpotifyAppRemote.getPlayerApi().play("spotify:track:" + trackId);
-    }
- 
+
     @Override
-    protected void onStart() 
-    {
+    protected void onStart() {
         super.onStart();
-        ConnectionParams connectionParams =
-                new ConnectionParams.Builder(CLIENT_ID)
-                        .setRedirectUri(REDIRECT_URI)
-                        .showAuthView(true)
-                        .build();
- 
-        SpotifyAppRemote.connect(this, connectionParams, new Connector.ConnectionListener() 
-        {
-            public void onConnected(SpotifyAppRemote spotifyAppRemote) 
-            {
+        ConnectionParams connectionParams = new ConnectionParams.Builder(CLIENT_ID)
+                .setRedirectUri(REDIRECT_URI)
+                .showAuthView(true)
+                .build();
+
+        SpotifyAppRemote.connect(this, connectionParams, new Connector.ConnectionListener() {
+            public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                 mSpotifyAppRemote = spotifyAppRemote;
                 Log.d("MainActivity", "Connected! Yay!");
- 
+
                 // Now you can start interacting with App Remote
                 connected();
- 
+
             }
- 
+
             public void onFailure(Throwable throwable) {
                 Log.e("MyActivity", throwable.getMessage(), throwable);
- 
+
                 // Something went wrong when attempting to connect! Handle errors here
             }
         });
     }
- 
+
     @Override
-    protected void onStop() 
-    {
+    protected void onStop() {
         super.onStop();
         SpotifyAppRemote.disconnect(mSpotifyAppRemote);
     }
- 
-    private void connected() 
-    {
-        // Play a playlist
+
+    private void connected() {
+        // Plays menu song
         mSpotifyAppRemote.getPlayerApi().play("spotify:track:0ByMNEPAPpOR5H69DVrTNy");
- 
+
         // Subscribe to PlayerState
         mSpotifyAppRemote.getPlayerApi()
                 .subscribeToPlayerState()
-                .setEventCallback(playerState -> 
-                {
+                .setEventCallback(playerState -> {
                     final Track track = playerState.track;
                     if (track != null) {
+                        mSpotifyAppRemote.getPlayerApi().setRepeat(PlayerApi.RepeatMode.TRACK);
                         Log.d("MainActivity", track.name + " by " + track.artist.name);
                         currentPlaying = track.name + " by " + track.artist.name;
                     }
                 });
+    }
+
+    // Triggered by Unity C#
+    public void PlaySong(String trackId) {
+        mSpotifyAppRemote.getPlayerApi().play("spotify:track:" + trackId);
+    }
+
+    // Triggered by Unity C#
+    public void SkipToNextSong() {
+        if (mSpotifyAppRemote != null) {
+            mSpotifyAppRemote.getPlayerApi().skipToNext();
+            Log.d("MainActivity", "Skipped to next song");
+        }
     }
 }
