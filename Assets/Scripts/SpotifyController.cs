@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpotifyController : MonoBehaviour
@@ -30,15 +29,13 @@ public class SpotifyController : MonoBehaviour
         using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
         {
             mainActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            Menu();
         }
     }
 
-    private void Update()
+    public void Menu()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            mainActivity.Call("SkipToNextSong");
-        }
+        mainActivity.Call("Menu");
     }
 
     public void PlaySong(string trackId)
@@ -51,6 +48,15 @@ public class SpotifyController : MonoBehaviour
 
         mainActivity.Call("PlaySong", trackId);
         PlayedSongs.Add(trackId);
+    }
 
+    public void ResetSpotify()
+    {
+        mainActivity.Call("ResetSpotify");
+    }
+
+    public void NextSong()
+    {
+        mainActivity.Call("SkipToNextSong");
     }
 }

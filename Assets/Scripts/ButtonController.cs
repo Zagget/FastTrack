@@ -15,6 +15,7 @@ public class ButtonController : MonoBehaviour
         inGameOverlay.SetActive(false);
         endScreen.SetActive(false);
         startOverlay.SetActive(true);
+        SpotifyController.Instance.ResetSpotify();
     }
 
     public void OnStartClick()
@@ -25,6 +26,18 @@ public class ButtonController : MonoBehaviour
     public void OnSettingClick()
     {
         EnableDisableOverlay(settingOverlay, true);
+    }
+
+    public void OnNextSongClick()
+    {
+        Debug.Log("next song");
+        SpotifyController.Instance.NextSong();
+    }
+
+    public void OnPlaySongClick()
+    {
+        Debug.Log("playing song");
+        SpotifyController.Instance.PlaySong("spotify:track:01kfSdF9zfcDLri5sSWEoL");
     }
 
 

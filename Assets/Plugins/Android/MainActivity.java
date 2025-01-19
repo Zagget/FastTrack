@@ -11,10 +11,10 @@ import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.android.appremote.api.PlayerApi;
-import com.spotify.android.appremote.api.PlayerApi.RepeatMode;
 
 import com.spotify.protocol.client.Subscription;
 import com.spotify.protocol.types.PlayerState;
+import com.spotify.protocol.types.Repeat;
 import com.spotify.protocol.types.Track;
 
 public class MainActivity extends UnityPlayerActivity {
@@ -61,11 +61,10 @@ public class MainActivity extends UnityPlayerActivity {
     protected void onStop() {
         super.onStop();
         SpotifyAppRemote.disconnect(mSpotifyAppRemote);
+        Log.d("MainActivity", "Disconnecting from onStop");
     }
 
     private void connected() {
-        // Plays menu song
-        mSpotifyAppRemote.getPlayerApi().play("spotify:track:0ByMNEPAPpOR5H69DVrTNy");
 
         // Subscribe to PlayerState
         mSpotifyAppRemote.getPlayerApi()
@@ -73,7 +72,6 @@ public class MainActivity extends UnityPlayerActivity {
                 .setEventCallback(playerState -> {
                     final Track track = playerState.track;
                     if (track != null) {
-                        mSpotifyAppRemote.getPlayerApi().setRepeat(PlayerApi.RepeatMode.TRACK);
                         Log.d("MainActivity", track.name + " by " + track.artist.name);
                         currentPlaying = track.name + " by " + track.artist.name;
                     }
@@ -81,14 +79,30 @@ public class MainActivity extends UnityPlayerActivity {
     }
 
     // Triggered by Unity C#
+    public void ResetSpotify() {
+        Log.d("MainActivity", "Turning off repeat");
+
+        // ToDO add more if needed.
+    }
+
+    public void Menu() {
+        // Plays menu song
+        mSpotifyAppRemote.getPlayerApi().setRepeat(Repeat.ALL);
+        mSpotifyAppRemote.getPlayerApi().play("spotify:track:0ByMNEPAPpOR5H69DVrTNy");
+        Log.d("MainActivity", "Playing Menu Song");
+    }
+
+    // Triggered by Unity C#
     public void PlaySong(String trackId) {
+        mSpotifyAppRemote.getPlayerApi().setRepeat(Repeat.OFF);
         mSpotifyAppRemote.getPlayerApi().play("spotify:track:" + trackId);
+        Log.d("MainActivity", "Playing song: " + trackId);
     }
 
     // Triggered by Unity C#
     public void SkipToNextSong() {
         if (mSpotifyAppRemote != null) {
-            mSpotifyAppRemote.getPlayerApi().skipToNext();
+            mSpotifyAppRemote.getPlayerApi().skipNext();
             Log.d("MainActivity", "Skipped to next song");
         }
     }

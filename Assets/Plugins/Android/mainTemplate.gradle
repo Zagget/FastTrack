@@ -1,16 +1,16 @@
 apply plugin: 'com.android.library'
+**APPLY_PLUGINS**
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':spotify-app-remote')  // Spotify App Remote SDK
-    implementation "com.google.code.gson:gson:2.6.1"  // Gson for JSON parsing
-}
+    implementation "com.google.code.gson:gson:2.6.1"
+**DEPS**}
 
 android {
     namespace "com.unity3d.player"
-    ndkPath ""C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.42f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\NDK""
-    compileSdkVersion 32
-    buildToolsVersion 32
+    ndkPath "**NDKPATH**"
+    compileSdkVersion **APIVERSION**
+    buildToolsVersion '**BUILDTOOLS**'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
