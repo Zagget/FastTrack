@@ -34,6 +34,7 @@ public class MainActivity extends UnityPlayerActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        SpotifyAppRemote.disconnect(mSpotifyAppRemote);
         ConnectionParams connectionParams = new ConnectionParams.Builder(CLIENT_ID)
                 .setRedirectUri(REDIRECT_URI)
                 .showAuthView(true)
@@ -94,9 +95,13 @@ public class MainActivity extends UnityPlayerActivity {
 
     // Triggered by Unity C#
     public void PlaySong(String trackId) {
-        mSpotifyAppRemote.getPlayerApi().setRepeat(Repeat.OFF);
-        mSpotifyAppRemote.getPlayerApi().play("spotify:track:" + trackId);
-        Log.d("MainActivity", "Playing song: " + trackId);
+        if (mSpotifyAppRemote != null && mSpotifyAppRemote.isConnected()) {
+            mSpotifyAppRemote.getPlayerApi().setRepeat(Repeat.OFF);
+            mSpotifyAppRemote.getPlayerApi().play("spotify:track:" + trackId);
+            Log.d("MainActivity", "Playing song: " + trackId);
+        } else {
+            Log.e("MainActivity", "Spotify is not connected, unable to play song.");
+        }
     }
 
     // Triggered by Unity C#

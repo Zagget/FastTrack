@@ -1,16 +1,19 @@
 apply plugin: 'com.android.library'
-**APPLY_PLUGINS**
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.google.code.gson:gson:2.6.1"
-**DEPS**}
+    implementation(name: 'spotify-auth-release-2.1.0', ext: 'aar')
+    implementation(name: 'spotify-app-remote-release-0.8.0', ext: 'aar')  // Spotify Auth SDK
+    implementation 'androidx.browser:browser:1.0.0'  // Browser-based auth
+    implementation 'androidx.appcompat:appcompat:1.6.1' // Explicit AppCompat version
+}
 
 android {
     namespace "com.unity3d.player"
     ndkPath "**NDKPATH**"
-    compileSdkVersion **APIVERSION**
-    buildToolsVersion '**BUILDTOOLS**'
+    compileSdkVersion 33
+    buildToolsVersion '32.0.0'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -18,14 +21,15 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion **MINSDKVERSION**
-        targetSdkVersion **TARGETSDKVERSION**
+        minSdkVersion 21 // Replace with your minimum supported API
+        targetSdkVersion 33
         ndk {
-            abiFilters **ABIFILTERS**
+            abiFilters "armeabi-v7a", "arm64-v8a" // Replace with your required ABIs
         }
-        versionCode **VERSIONCODE**
-        versionName '**VERSIONNAME**'
-        consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
+        versionCode 1
+        versionName '1.0'
+        consumerProguardFiles 'proguard-unity.txt'
+        manifestPlaceholders = [appAuthRedirectScheme: 'com.redirectScheme.comm']
     }
 
     lintOptions {
@@ -33,10 +37,7 @@ android {
     }
 
     aaptOptions {
-        noCompress = **BUILTIN_NOCOMPRESS** + unityStreamingAssets.tokenize(', ')
+        noCompress = ['.unity3d', '.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')
         ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
-    }**PACKAGING_OPTIONS**
+    }
 }
-**IL_CPP_BUILD_SETUP**
-**SOURCE_BUILD_SETUP**
-**EXTERNAL_SOURCES**
