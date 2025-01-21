@@ -1,43 +1,111 @@
 apply plugin: 'com.android.library'
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.google.code.gson:gson:2.6.1"
-    implementation(name: 'spotify-auth-release-2.1.0', ext: 'aar')
-    implementation(name: 'spotify-app-remote-release-0.8.0', ext: 'aar')  // Spotify Auth SDK
-    implementation 'androidx.browser:browser:1.0.0'  // Browser-based auth
-    implementation 'androidx.appcompat:appcompat:1.6.1' // Explicit AppCompat version
-}
-
 android {
-    namespace "com.unity3d.player"
-    ndkPath "**NDKPATH**"
-    compileSdkVersion 33
-    buildToolsVersion '32.0.0'
+    compileSdk 33
+    buildToolsVersion = "33.0.0"
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\jonat\\OneDrive\\Desktop\\Git\\FastTrack\\user.keystore')
+            storePassword '12345'
+            keyAlias 'key'
+            keyPassword '123456'
+        }
     }
 
     defaultConfig {
-        minSdkVersion 21 // Replace with your minimum supported API
+        consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
+        minSdkVersion 16
         targetSdkVersion 33
-        ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a" // Replace with your required ABIs
-        }
         versionCode 1
-        versionName '1.0'
-        consumerProguardFiles 'proguard-unity.txt'
-        manifestPlaceholders = [appAuthRedirectScheme: 'com.redirectScheme.comm']
+        versionName "1.0"
+
+        manifestPlaceholders = [redirectSchemeName: "spotify-sdk", redirectHostName: "auth"]
+
+    }
+    buildTypes {
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
+        }
     }
 
     lintOptions {
-        abortOnError false
+        lintConfig file("${project.rootDir}/config/lint.xml")
+        quiet false
+        warningsAsErrors false
+        textReport true
+        textOutput 'stdout'
+        xmlReport false
     }
-
-    aaptOptions {
-        noCompress = ['.unity3d', '.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')
-        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
-    }
+    namespace 'com.spotify.sdk.android.authentication.sample'
 }
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation files('C:\\Users\\jonat\\OneDrive\\Desktop\\Git\\FastTrack\\Assets\\Plugins\\Android\\spotify-auth-release-2.1.0')
+
+    implementation 'com.spotify.android:auth:2.1.1'
+
+    implementation 'androidx.browser:browser:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+}
+
+
+
+
+
+
+
+
+
+
+// apply plugin: 'com.android.library'
+
+// dependencies {
+//     implementation fileTree(dir: 'libs', include: ['*.jar'])
+//     implementation 'com.google.code.gson:gson:2.6.1'
+//     implementation 'androidx.browser:browser:1.0.0'
+//     implementation 'androidx.appcompat:appcompat:1.6.1'
+//     implementation(name: 'spotify-auth-release-2.1.0', ext: 'aar')
+//     implementation(name: 'spotify-app-remote-release-0.8.0', ext: 'aar')
+// }
+
+// android {
+//     namespace "com.unity3d.player"
+//     ndkPath "**NDKPATH**"
+//     compileSdkVersion 33
+
+//     compileOptions {
+//         sourceCompatibility JavaVersion.VERSION_11
+//         targetCompatibility JavaVersion.VERSION_11
+//     }
+
+//     defaultConfig {
+//         minSdkVersion 21
+//         targetSdkVersion 33
+//         // ndk {
+//         //     abiFilters "armeabi-v7a", "arm64-v8a"
+//         // }
+//         versionCode 1
+//         versionName '1.0'
+//         consumerProguardFiles 'proguard-unity.txt'
+//         manifestPlaceholders = [redirectSchemeName: "spotify-sdk", redirectHostName: "auth"]
+//     }
+
+//     lint {
+//         abortOnError false
+//     }
+
+//     aaptOptions {
+//         noCompress = ['.unity3d', '.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')
+//         ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
+//     }
+// }
